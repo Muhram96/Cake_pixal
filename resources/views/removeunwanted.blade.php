@@ -1,132 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        window.csrfToken = "{{ csrf_token() }}";
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Object Removal Brush</title>
-    <style>
-        #canvas {
-            border: 2px solid black;
-            cursor: crosshair;
-        }
-    </style>
+    <title>Multi Selection with Jcrop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/css/Jcrop.min.css">
 </head>
 <body>
-<h1>Object Removal Brush</h1>
-<input type="file" id="uploadInput" accept="image/*">
-<canvas id="canvas" width="800" height="600"></canvas>
-<button id="clearButton">Clear</button>
-<button id="sendButton">Send Marked Image</button>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<h1>Multi Selection with Jcrop</h1>
+<form id="uploadForm" action="{{ route('/remove/obj') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <input type="file" id="imgInp" name="image_file" />
+    <img src="#" alt="Image" id="image">
+    <input type="hidden" id="coordinates" name="rectangles" /> <!-- Hidden field for coordinates -->
+    <button id="deleteSelection">Delete Selection</button>
+    <button type="submit">Submit Selections</button> <!-- Submit button to send selections to server -->
+</form>
+@if(session('object_removed'))
+    <img src="{{ session('object_removed') }}" alt="Processed Image">
+    <a id="download" href="{{ session('object_removed') }}" download>Click here to Download image</a>
+@else
+    <p>No processed image available.</p>
+@endif
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/js/Jcrop.min.js"></script>
 <script>
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-    let isDrawing = false;
-    let markings = [];
-    let image;
+    $(document).ready(function() {
+        var jcrop_api;
+        var coordinates = []; // Array to store coordinates
 
-    // Function to draw markings on canvas
-    function drawMarkings() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        context.lineWidth = 2;
-        context.strokeStyle = 'red';
-        markings.forEach(mark => {
-            context.beginPath();
-            context.arc(mark.x, mark.y, 5, 0, Math.PI * 2);
-            context.stroke();
+        $('#imgInp').change(function() {
+            readURL(this);
         });
+
+        $('#uploadForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+            // Update hidden field value with coordinates array
+            var roundedCoordinates = roundCoordinates(coordinates);
+            $('#coordinates').val(JSON.stringify(roundedCoordinates));
+            // Submit the form
+            this.submit();
+        });
+
+        $('#deleteSelection').click(function() {
+            jcrop_api.setSelect([0, 0, 0, 0]);
+        });
+
+        var stage = $('#image').Jcrop({
+            onSelect: function(c) {
+                // Display the selected coordinates
+                console.log('Selected coordinates: x=' + c.x + ', y=' + c.y + ', w=' + c.w + ', h=' + c.h);
+                // Add coordinates to the array
+                coordinates.push({
+                    x: c.x,
+                    y: c.y,
+                    width: c.w,
+                    height: c.h
+                });
+            },
+            multi: true, // Enable multi selection
+            allowSelect: true, // Allow new selections
+            allowResize: true, // Allow resizing of selections
+            allowMove: true // Allow moving of selections
+        });
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
-    // Event listener for mouse down
-    canvas.addEventListener('mousedown', (e) => {
-        isDrawing = true;
-        markings.push({ x: e.offsetX, y: e.offsetY });
-        drawMarkings();
-    });
-
-    // Event listener for mouse move
-    canvas.addEventListener('mousemove', (e) => {
-        if (isDrawing) {
-            markings.push({ x: e.offsetX, y: e.offsetY });
-            drawMarkings();
-        }
-    });
-
-    // Event listener for mouse up
-    canvas.addEventListener('mouseup', () => {
-        isDrawing = false;
-    });
-
-    // Event listener for clear button
-    document.getElementById('clearButton').addEventListener('click', () => {
-        markings = [];
-        drawMarkings();
-    });
-
-    // Event listener for upload input
-    document.getElementById('uploadInput').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            image = new Image();
-            image.onload = function () {
-                canvas.width = image.width;
-                canvas.height = image.height;
-                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    function roundCoordinates(coordinates) {
+        return coordinates.map(function(coord) {
+            return {
+                x: Math.round(coord.x),
+                y: Math.round(coord.y),
+                width: Math.round(coord.width),
+                height: Math.round(coord.height)
             };
-            image.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Event listener for send button
-    document.getElementById('sendButton').addEventListener('click', () => {
-        // Create a hidden canvas to draw the marked image
-        const hiddenCanvas = document.createElement('canvas');
-        hiddenCanvas.width = canvas.width;
-        hiddenCanvas.height = canvas.height;
-        const hiddenContext = hiddenCanvas.getContext('2d');
-        hiddenContext.drawImage(image, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-        markings.forEach(mark => {
-            hiddenContext.beginPath();
-            hiddenContext.arc(mark.x, mark.y, 5, 0, Math.PI * 2);
-            hiddenContext.strokeStyle = 'red';
-            hiddenContext.lineWidth = 2;
-            hiddenContext.stroke();
         });
-
-        // Convert marked image to base64 data URL
-        const markedImageData = hiddenCanvas.toDataURL('image/jpeg');
-
-        // Send marked image to the server using AJAX
-        document.getElementById('sendButton').addEventListener('click', () => {
-            // Convert marked image to base64 data URL
-            const markedImageData = hiddenCanvas.toDataURL('image/jpeg');
-
-            // Send marked image to the server using AJAX
-            $.ajax({
-                type: 'POST',
-                url: '{{ route('/api/unwantedremove') }}',
-                headers: {
-                    'X-CSRF-TOKEN': window.csrfToken // Include the CSRF token in the headers
-                },
-                data: {
-                    markedImageData: markedImageData
-                },
-                success: function(response) {
-                    console.log('Response:', response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-    });
+    }
 </script>
 </body>
 </html>

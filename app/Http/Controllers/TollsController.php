@@ -172,73 +172,32 @@ class TollsController extends Controller
     public function unwanted(){
         return view('removeunwanted');
     }
-    public function RemoveUnwanted(Request $request){
-
-        $markedImageData = $request->input('markedImageData');
+    public function ObjectRemover(Request $request)
+    {
+        $image_file_path = $request->file('image_file')->store('public/uploads');
+        $rectangles=$request->rectangles;
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/watermark');
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-            "X-API-KEY: wxy1eatufgkzork6s",
-            "Content-Type: multipart/form-data",
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://techhk.aoscdn.com/api/tasks/visual/inpaint',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array('sync' => '1','image_file' => new  \CURLFile(storage_path('app/' . $image_file_path)),'rectangles' => $rectangles),
+            CURLOPT_HTTPHEADER => array(
+                'X-API-KEY: wxy1eatufgkzork6s'
+            ),
         ));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, array('sync' => 0, 'image_file' => new \CURLFile(storage_path('app/' . $markedImageData))));
+
         $response = curl_exec($curl);
-        $result = curl_errno($curl) ? curl_error($curl) : $response;
+
         curl_close($curl);
-        $result = json_decode($result, true);
-        if ( !isset($result["status"]) || $result["status"] != 200 ) {
-            // request failed, log the details
-            var_dump($result);
-            die("post request failed");
-        }
-//  var_dump($result);
-        $task_id = $result["data"]["task_id"];
-
-
-//get the task result
-// 1、"The polling interval is set to 1 second."
-//2 "The polling time is around 30 seconds."
-        for ($i = 1; $i <= 30; $i++) {
-            if ($i != 1) {
-                sleep(1);
-            }
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/watermark/".$task_id);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                "X-API-KEY: wxy1eatufgkzork6s",
-
-            ));
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($curl);
-            $result = curl_errno($curl) ? curl_error($curl) : $response;
-            curl_close($curl);
-            var_dump($result);
-            $result = json_decode($result, true);
-            if ( !isset($result["status"]) || $result["status"] != 200 ) {
-                // Task exception, logging the error.
-                //You can choose to continue the loop with 'continue' or break the loop with 'break'
-                var_dump($result);
-                continue;
-            }
-            if ( $result["data"]["state"] == 1 ) {
-                // task success
-                var_dump($result["data"]["image"]);
-                break;
-            } else if ( $result["data"]["state"] < 0) {
-                // request failed, log the details
-                var_dump($result);
-                break;
-            } else {
-                // Task processing
-                if ($i == 30) {
-                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
-                }
-            }
-        }
+        $responseData = json_decode($response, true);
+        Session::flash('object_removed', $responseData["data"]["image"]);
+        return redirect()->back();
     }
-
 }

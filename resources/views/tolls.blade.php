@@ -56,7 +56,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="background-image">
                 <div class="max-w-md bg-white p-8 rounded-lg shadow-lg">
-                    <form id="uploadForm" action="{{ route('/enhanceimage') }}" method="POST" enctype="multipart/form-data">
+                    <form id="uploadForm" action="{{ route('/backgroundchange') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
                         <p class="text-gray-700 mb-6">Click the button below to upload and enhance photo quality.</p>
