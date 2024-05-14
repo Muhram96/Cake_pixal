@@ -17,4 +17,8 @@ Route::middleware([
     Route::get('/tolls', function () {
         return view('tolls');
     })->name('/tolls');
+    Route::POST('/changebackground', [\App\Http\Controllers\TollsController::class, 'RemoveBackground'])->name('/changebackground');
+    Route::POST('/enhanceimage', [\App\Http\Controllers\TollsController::class, 'enhanceimage'])->name('/enhanceimage');
+    Route::get('/unwanted', [\App\Http\Controllers\TollsController::class, 'unwanted'])->name('/unwanted');
+     Route::POST('/api/unwantedremove', [\App\Http\Controllers\TollsController::class, 'RemoveUnwanted'])->name('/api/unwantedremove');
 });
