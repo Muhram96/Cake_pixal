@@ -202,8 +202,10 @@ class TollsController extends Controller
     }
     public function GenerateBackGroundImage(Request $request)
     {
-        $image_file_path = $request->file('image_file')->store('public/uploads');
-        $prompt = $request->prompt;
+
+
+        $image_file_path = $request->file('image_file')->store('/public/uploads');
+        $prompt =$request->prompt;
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -215,12 +217,7 @@ class TollsController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array(
-                'image_file'=> new \CURLFile(storage_path('app/' . $image_file_path)),
-                'prompt' => 'river on background',
-                'batch_size' => '2',
-                'scene_type'=>''
-            ),
+            CURLOPT_POSTFIELDS => array('sync' => '1','image_file'=> new  \CURLFile(storage_path('app/' . $image_file_path)),'prompt' => $prompt,'batch_size' => '2'),
             CURLOPT_HTTPHEADER => array(
                 'X-API-KEY: wxy1eatufgkzork6s'
             ),
@@ -228,52 +225,35 @@ class TollsController extends Controller
 
         $response = curl_exec($curl);
 
+        $response = curl_exec($curl);
+        $result=json_decode($response,true);
         curl_close($curl);
-        $result = json_decode($response, true);
+        echo $task_id = $result["data"]["task_id"];
+exit;
+        $curl = curl_init();
 
-        $task_id = $result["data"]["task_id"];
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://techhk.aoscdn.com/api/tasks/visual/background/'.$task_id,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'X-API-KEY: wxy1eatufgkzork6s'
+            ),
+        ));
 
-
-        //get the task result
-        // 1、"The polling interval is set to 1 second."
-        //2 "The polling time is around 300 seconds."
-        for ($i = 1; $i <= 300; $i++) {
-            if ($i != 1) {
-                sleep(1);
-            }
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/background/" . $task_id);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                "X-API-KEY: wxy1eatufgkzork6s",
-
-            ));
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($curl);
-            $result = curl_errno($curl) ? curl_error($curl) : $response;
-            curl_close($curl);
-            var_dump($result);
-            $result = json_decode($result, true);
-            if (!isset($result["status"]) || $result["status"] != 200) {
-                // Task exception, logging the error.
-                //You can choose to continue the loop with 'continue' or break the loop with 'break'
-                var_dump($result);
-                continue;
-            }
-            if ($result["data"]["state"] == 1) {
-                // task success
-                var_dump($result["data"]["file"]);
-                break;
-            } else if ($result["data"]["state"] < 0) {
-                // request failed, log the details
-                var_dump($result);
-                break;
-            } else {
-                // Task processing
-                if ($i == 300) {
-                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
-                }
-            }
-        }
+        $response = curl_exec($curl);
+        $result= json_decode($response,true);
+        print_r($result);
+        curl_close($curl);
+        $responseData = json_decode($response, true);
+        print_r($responseData);
+        exit;
+        Session::flash('Generated_background', $responseData["data"]["image_1"]);
+        return redirect()->back();
     }
 }

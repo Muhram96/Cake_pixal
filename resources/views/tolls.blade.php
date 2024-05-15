@@ -36,7 +36,7 @@
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
                         <p class="text-gray-700 mb-6">Click the button below to upload and enhance photo quality.</p>
-                        <input id="image_file" type="file" name="image_file">
+                        <input type="file" id="image_file"  name="image_file">
                         <button id="submitButton" class="btn" type="">
                             Enhance Image
                         </button>
@@ -59,18 +59,17 @@
                     <form id="uploadForm" action="{{ route('/backgroundchange') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
-                        <p class="text-gray-700 mb-6">Click the button below to upload and Change Background image.</p>
-                        <input type="file" id="imgInp" name="image_file" />
-                        <img src="#" alt="Image" id="image">
-                        <input type="text" name="prompt">
+                        <p class="text-gray-700 mb-6">Click the button below to upload and enhance photo quality.</p>
+                        <input type="file" id="image_file"  name="image_file">
+                        <input type="text" id=""  name="prompt">
                         <button id="submitButton" class="btn" type="">
-                            Change Background
+                            Enhance Image
                         </button>
 
                     </form>
-                    @if(session('enhance_image'))
-                        <img src="{{ session('enhance_image') }}" alt="Processed Image">
-                        <a id="download" href="{{ session('enhance_image') }}" download>Click here to Download image</a>
+                    @if(session('Generated_background'))
+                        <img src="{{ session('Generated_background') }}" alt="Processed Image">
+                        <a id="download" href="{{ session('Generated_background') }}" download>Click here to Download image</a>
                     @else
                         <p>No processed image available.</p>
                     @endif
