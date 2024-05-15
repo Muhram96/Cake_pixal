@@ -200,4 +200,80 @@ class TollsController extends Controller
         Session::flash('object_removed', $responseData["data"]["image"]);
         return redirect()->back();
     }
+    public function GenerateBackGroundImage(Request $request)
+    {
+        $image_file_path = $request->file('image_file')->store('public/uploads');
+        $prompt = $request->prompt;
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://techhk.aoscdn.com/api/tasks/visual/background',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array(
+                'image_file'=> new \CURLFile(storage_path('app/' . $image_file_path)),
+                'prompt' => 'river on background',
+                'batch_size' => '2',
+                'scene_type'=>''
+            ),
+            CURLOPT_HTTPHEADER => array(
+                'X-API-KEY: wxy1eatufgkzork6s'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $result = json_decode($response, true);
+
+        $task_id = $result["data"]["task_id"];
+
+
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 300 seconds."
+        for ($i = 1; $i <= 300; $i++) {
+            if ($i != 1) {
+                sleep(1);
+            }
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/background/" . $task_id);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "X-API-KEY: wxy1eatufgkzork6s",
+
+            ));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+            $result = curl_errno($curl) ? curl_error($curl) : $response;
+            curl_close($curl);
+            var_dump($result);
+            $result = json_decode($result, true);
+            if (!isset($result["status"]) || $result["status"] != 200) {
+                // Task exception, logging the error.
+                //You can choose to continue the loop with 'continue' or break the loop with 'break'
+                var_dump($result);
+                continue;
+            }
+            if ($result["data"]["state"] == 1) {
+                // task success
+                var_dump($result["data"]["file"]);
+                break;
+            } else if ($result["data"]["state"] < 0) {
+                // request failed, log the details
+                var_dump($result);
+                break;
+            } else {
+                // Task processing
+                if ($i == 300) {
+                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
+                }
+            }
+        }
+    }
 }

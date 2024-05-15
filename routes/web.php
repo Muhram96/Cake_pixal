@@ -21,5 +21,5 @@ Route::middleware([
     Route::POST('/enhanceimage', [\App\Http\Controllers\TollsController::class, 'enhanceimage'])->name('/enhanceimage');
     Route::get('/unwanted', [\App\Http\Controllers\TollsController::class, 'unwanted'])->name('/unwanted');
     Route::POST('/remove/obj', [\App\Http\Controllers\TollsController::class, 'ObjectRemover'])->name('/remove/obj');
-    Route::POST('/backgroundchange', [\App\Http\Controllers\TollsController::class, 'enhanceimage'])->name('/backgroundchange');
+    Route::POST('/backgroundchange', [\App\Http\Controllers\TollsController::class, 'GenerateBackGroundImage'])->name('/backgroundchange');
 });

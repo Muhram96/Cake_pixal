@@ -59,10 +59,12 @@
                     <form id="uploadForm" action="{{ route('/backgroundchange') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
-                        <p class="text-gray-700 mb-6">Click the button below to upload and enhance photo quality.</p>
-                        <input id="image_file" type="file" name="image_file">
+                        <p class="text-gray-700 mb-6">Click the button below to upload and Change Background image.</p>
+                        <input type="file" id="imgInp" name="image_file" />
+                        <img src="#" alt="Image" id="image">
+                        <input type="text" name="prompt">
                         <button id="submitButton" class="btn" type="">
-                            Enhance Image
+                            Change Background
                         </button>
 
                     </form>
@@ -78,7 +80,23 @@
     </div>
 
     <!-- Script to remove background image -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#imgInp').change(function() {
+                readURL(this);
+            });
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
+                reader.onload = function (e) {
+                    $('#image').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </x-app-layout>
