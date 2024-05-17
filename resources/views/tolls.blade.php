@@ -59,17 +59,19 @@
                     <form id="uploadForm" action="{{ route('/backgroundchange') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
-                        <p class="text-gray-700 mb-6">Click the button below to upload and enhance photo quality.</p>
+                        <p class="text-gray-700 mb-6">Click the button below to upload to change BG image.</p>
                         <input type="file" id="image_file"  name="image_file">
                         <input type="text" id=""  name="prompt">
                         <button id="submitButton" class="btn" type="">
-                            Enhance Image
+                            Change BG Image
                         </button>
 
                     </form>
-                    @if(session('Generated_background'))
-                        <img src="{{ session('Generated_background') }}" alt="Processed Image">
-                        <a id="download" href="{{ session('Generated_background') }}" download>Click here to Download image</a>
+                    @if(session('Generated_background_1'))
+                        <img src="{{ session('Generated_background_1') }}" alt="Processed Image">
+                        <a id="download" href="{{ session('Generated_background_1') }}" download>Click here to Download image 01</a>
+                        <img src="{{ session('Generated_background_2') }}" alt="Processed Image">
+                        <a id="download" href="{{ session('Generated_background_2') }}" download>Click here to Download image 01</a>
                     @else
                         <p>No processed image available.</p>
                     @endif
@@ -77,7 +79,32 @@
             </div>
         </div>
     </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="background-image">
+                <div class="max-w-md bg-white p-8 rounded-lg shadow-lg">
+                    <form id="uploadForm" action="{{ route('/idphoto') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <h2 class="text-3xl mb-4">Upload Image!</h2>
+                        <p class="text-gray-700 mb-6">Click the button below to upload and get ID photo.</p>
+                        <input type="file" id="image_file"  name="image_file">
+                        <input type="text" id="bg_color"  name="bg_color">
+                        <input type="text" id="size"  name="size">
+                        <button id="submitButton" class="btn" type="">
+                            Enhance Image
+                        </button>
 
+                    </form>
+                    @if(session('id_image'))
+                        <img src="{{ session('id_image') }}" alt="Processed Image">
+                        <a id="download" href="{{ session('id_image') }}" download>Click here to Download image</a>
+                    @else
+                        <p>No processed image available.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Script to remove background image -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
