@@ -200,6 +200,7 @@ class TollsController extends Controller
         Session::flash('object_removed', $responseData["data"]["image"]);
         return redirect()->back();
     }
+<<<<<<< Updated upstream
     public function GenerateBackGroundImage(Request $request)
     {
 
@@ -356,4 +357,8 @@ class TollsController extends Controller
             }
         }
     }
+=======
+   
+
+>>>>>>> Stashed changes
 }
