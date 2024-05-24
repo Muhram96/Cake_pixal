@@ -59,19 +59,18 @@
                     <form id="uploadForm" action="{{ route('/backgroundchange') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <h2 class="text-3xl mb-4">Upload Image!</h2>
-                        <p class="text-gray-700 mb-6">Click the button below to upload to change BG image.</p>
-                        <input type="file" id="image_file"  name="image_file">
-                        <input type="text" id=""  name="prompt">
+                        <p class="text-gray-700 mb-6">Click the button below to upload and Change Background image.</p>
+                        <input type="file" id="imgInp" name="image_file" />
+                        <img src="#" alt="Image" id="image">
+                        <input type="text" name="prompt">
                         <button id="submitButton" class="btn" type="">
-                            Change BG Image
+                            Change Background
                         </button>
 
                     </form>
-                    @if(session('Generated_background_1'))
-                        <img src="{{ session('Generated_background_1') }}" alt="Processed Image">
-                        <a id="download" href="{{ session('Generated_background_1') }}" download>Click here to Download image 01</a>
-                        <img src="{{ session('Generated_background_2') }}" alt="Processed Image">
-                        <a id="download" href="{{ session('Generated_background_2') }}" download>Click here to Download image 01</a>
+                    @if(session('enhance_image'))
+                        <img src="{{ session('enhance_image') }}" alt="Processed Image">
+                        <a id="download" href="{{ session('enhance_image') }}" download>Click here to Download image</a>
                     @else
                         <p>No processed image available.</p>
                     @endif
