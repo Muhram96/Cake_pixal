@@ -73,14 +73,14 @@ class TollsController extends Controller
             $result = json_decode($result, true);
             if (!isset($result["status"]) || $result["status"] != 200) {
                 Session::flash('image', $result["data"]["image"]);
-                return view('tolls', ['data' => $result["data"]["image"]]);
+                return redirect()->back();
                 //var_dump($result);
                 //continue;
             }
             if ($result["data"]["state"] == 1) {
                 //echo "here1";
                 Session::flash('image', $result["data"]["image"]);
-                return redirect('tolls')->with($result["data"]["image"]);
+                return redirect()->back();
                 //var_dump($result);
                 //break;
             } else if ($result["data"]["state"] < 0) {
@@ -116,17 +116,17 @@ class TollsController extends Controller
         $result = json_decode($result, true);
         if ( !isset($result["status"]) || $result["status"] != 200 ) {
             // request failed, log the details
-            Session::flash('image', $result["data"]["image"]);
-            return redirect('tolls')->with($result["data"]["image"]);
+            Session::flash('enhance_image', $result["data"]["image"]);
+            return redirect()->back();
             //die("post request failed");
         }
-//  var_dump($result);
+        //  var_dump($result);
         $task_id = $result["data"]["task_id"];
 
 
-//get the task result
-// 1、"The polling interval is set to 1 second."
-//2 "The polling time is around 30 seconds."
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 30 seconds."
         for ($i = 1; $i <= 30; $i++) {
             if ($i != 1) {
                 sleep(1);
@@ -146,19 +146,19 @@ class TollsController extends Controller
             if ( !isset($result["status"]) || $result["status"] != 200 ) {
                 // Task exception, logging the error.
                 //You can choose to continue the loop with 'continue' or break the loop with 'break'
-                Session::flash('image', $result["data"]["image"]);
-                return redirect('tolls')->with($result["data"]["image"]);
+                Session::flash('enhance_image', $result["data"]["image"]);
+                return redirect()->back();
                 //continue;
             }
             if ( $result["data"]["state"] == 1 ) {
                 // task success
                 Session::flash('enhance_image', $result["data"]["image"]);
-                return redirect('tolls');
+                return redirect()->back();
                // break;
             } else if ( $result["data"]["state"] < 0) {
                 // request failed, log the details
                 Session::flash('enhance_image', $result["data"]["image"]);
-                return redirect('tolls');
+                return redirect()->back();
                 //var_dump($result);
                 //break;
             } else {
@@ -225,13 +225,13 @@ class TollsController extends Controller
             var_dump($result);
             die("post request failed");
         }
-//  var_dump($result);
+        //  var_dump($result);
         $task_id = $result["data"]["task_id"];
 
 
-//get the task result
-// 1、"The polling interval is set to 1 second."
-//2 "The polling time is around 300 seconds."
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 300 seconds."
         for ($i = 1; $i <= 300; $i++) {
             if ($i != 1) {
                 sleep(1);
@@ -254,7 +254,7 @@ class TollsController extends Controller
                 //You can choose to continue the loop with 'continue' or break the loop with 'break'
                 Session::flash('Generated_background_1', $result["data"]["image_1"]);
                 Session::flash('Generated_background_2', $result["data"]["image_2"]);
-                return redirect('tolls');
+                return redirect()->back();
                 //var_dump($result);
                 //continue;
             }
@@ -262,14 +262,13 @@ class TollsController extends Controller
                 // task success
                 Session::flash('Generated_background_1', $result["data"]["image_1"]);
                 Session::flash('Generated_background_2', $result["data"]["image_2"]);
-                return redirect('tolls');
+                return redirect()->back();
 //                var_dump($result["data"]["image_1"]);
 //                break;
             } else if ( $result["data"]["state"] < 0) {
                 // request failed, log the details
-                Session::flash('Generated_background_1', $result["data"]["image_1"]);
-                Session::flash('Generated_background_2', $result["data"]["image_2"]);
-                return redirect('tolls');
+                Session::flash('error', 'something went wrong');
+                return redirect()->back();
 //                var_dump($result);
 //                break;
             } else {
@@ -304,13 +303,13 @@ class TollsController extends Controller
             var_dump($result);
             die("post request failed");
         }
-//  var_dump($result);
+        //  var_dump($result);
         $task_id = $result["data"]["task_id"];
 
 
-//get the task result
-// 1、"The polling interval is set to 1 second."
-//2 "The polling time is around 30 seconds."
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 30 seconds."
         for ($i = 1; $i <= 30; $i++) {
             if ($i != 1) {
                 sleep(1);
@@ -332,25 +331,322 @@ class TollsController extends Controller
                 // Task exception, logging the error.
                 //You can choose to continue the loop with 'continue' or break the loop with 'break'
                 Session::flash('id_image', $result["data"]["image"]);
-                return redirect('tolls');
+                return redirect()->back();
 //                var_dump($result);
 //                continue;
             }
             if ( $result["data"]["state"] == 1 ) {
                 // task success
                 Session::flash('id_image', $result["data"]["image"]);
-                return redirect('tolls');
+                return redirect()->back();
 //                var_dump($result["data"]["image"]);
 //                break;
             } else if ( $result["data"]["state"] < 0) {
                 // request failed, log the details
-                Session::flash('id_image', $result["data"]["image"]);
-                return redirect('tolls');
+                Session::flash('error', 'something went wrong');
+                return redirect()->back();
 //                var_dump($result);
 //                break;
             } else {
                 // Task processing
                 if ($i == 30) {
+                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
+                }
+            }
+        }
+    }
+
+    public function ColorImageGenerator(Request $request){
+
+        $image_file_path = $request->file('image_file')->store('/public/uploads');
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/colorization');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "X-API-KEY: wxy1eatufgkzork6s",
+            "Content-Type: multipart/form-data",
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, array('sync' => 0, 'image_file' => new  \CURLFile(storage_path('app/' . $image_file_path))));
+        $response = curl_exec($curl);
+        $result = curl_errno($curl) ? curl_error($curl) : $response;
+        curl_close($curl);
+        $result = json_decode($result, true);
+        if ( !isset($result["status"]) || $result["status"] != 200 ) {
+            // request failed, log the details
+            var_dump($result);
+            die("post request failed");
+        }
+        //  var_dump($result);
+        $task_id = $result["data"]["task_id"];
+
+
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 30 seconds."
+        for ($i = 1; $i <= 30; $i++) {
+            if ($i != 1) {
+                sleep(1);
+            }
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/colorization/".$task_id);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "X-API-KEY: wxy1eatufgkzork6s",
+
+            ));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+            $result = curl_errno($curl) ? curl_error($curl) : $response;
+            curl_close($curl);
+            var_dump($result);
+            $result = json_decode($result, true);
+            if ( !isset($result["status"]) || $result["status"] != 200 ) {
+                // Task exception, logging the error.
+                //You can choose to continue the loop with 'continue' or break the loop with 'break'
+                //var_dump($result);
+                //continue;
+                Session::flash('color_image', $result["data"]["image"]);
+                return redirect()->back();
+            }
+            if ( $result["data"]["state"] == 1 ) {
+                // task success
+                //var_dump($result["data"]["image"]);
+                //break;
+                Session::flash('color_image', $result["data"]["image"]);
+                return redirect()->back();
+            } else if ( $result["data"]["state"] < 0) {
+                // request failed, log the details
+                //var_dump($result);
+                //break;
+                Session::flash('error', 'something went wrong');
+                return redirect()->back();
+            } else {
+                // Task processing
+                if ($i == 30) {
+                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
+                }
+            }
+        }
+    }
+
+    public function CompressedImageGenerator(Request $request){
+        $image_file_path = $request->file('image_file')->store('/public/uploads');
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/imgcompress');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "X-API-KEY: wxy1eatufgkzork6s",
+            "Content-Type: multipart/form-data",
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, array('sync' => 0, 'image_file' => new  \CURLFile(storage_path('app/' . $image_file_path))));
+        $response = curl_exec($curl);
+        $result = curl_errno($curl) ? curl_error($curl) : $response;
+        curl_close($curl);
+        $result = json_decode($result, true);
+        if ( !isset($result["status"]) || $result["status"] != 200 ) {
+            // request failed, log the details
+            var_dump($result);
+            die("post request failed");
+        }
+            //  var_dump($result);
+        $task_id = $result["data"]["task_id"];
+
+
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 30 seconds."
+        for ($i = 1; $i <= 30; $i++) {
+            if ($i != 1) {
+                sleep(1);
+            }
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/imgcompress/".$task_id);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "X-API-KEY: wxy1eatufgkzork6s",
+
+            ));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+            $result = curl_errno($curl) ? curl_error($curl) : $response;
+            curl_close($curl);
+            var_dump($result);
+            $result = json_decode($result, true);
+            if ( !isset($result["status"]) || $result["status"] != 200 ) {
+                // Task exception, logging the error.
+                //You can choose to continue the loop with 'continue' or break the loop with 'break'
+                //var_dump($result);
+                //continue;
+                Session::flash('compressed_image', $result["data"]["image"]);
+                return redirect()->back();
+            }
+            if ( $result["data"]["state"] == 1 ) {
+                // task success
+                //var_dump($result["data"]["image"]);
+                //break;
+                Session::flash('compressed_image', $result["data"]["image"]);
+                return redirect()->back();
+            } else if ( $result["data"]["state"] < 0) {
+                // request failed, log the details
+                //var_dump($result);
+                //break;
+                Session::flash('error', 'something went wrong');
+                return redirect()->back();
+            } else {
+                // Task processing
+                if ($i == 30) {
+                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
+                }
+            }
+        }
+    }
+
+    public function CropEnhancedImageGenerator(Request $request){
+        $image_file_path = $request->file('image_file')->store('/public/uploads');
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/correction');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "X-API-KEY: wxy1eatufgkzork6s",
+            "Content-Type: multipart/form-data",
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, array('sync' => 0,'type'=>2, 'image_file' => new  \CURLFile(storage_path('app/' . $image_file_path))));
+        $response = curl_exec($curl);
+        $result = curl_errno($curl) ? curl_error($curl) : $response;
+        curl_close($curl);
+        $result = json_decode($result, true);
+        if ( !isset($result["status"]) || $result["status"] != 200 ) {
+            // request failed, log the details
+            var_dump($result);
+            die("post request failed");
+        }
+            //  var_dump($result);
+        $task_id = $result["data"]["task_id"];
+
+
+            //get the task result
+            // 1、"The polling interval is set to 1 second."
+            //2 "The polling time is around 30 seconds."
+        for ($i = 1; $i <= 30; $i++) {
+            if ($i != 1) {
+                sleep(1);
+            }
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/visual/correction/".$task_id);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "X-API-KEY: wxy1eatufgkzork6s",
+
+            ));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+            $result = curl_errno($curl) ? curl_error($curl) : $response;
+            curl_close($curl);
+            var_dump($result);
+            $result = json_decode($result, true);
+            if ( !isset($result["status"]) || $result["status"] != 200 ) {
+                // Task exception, logging the error.
+                //You can choose to continue the loop with 'continue' or break the loop with 'break'
+                //var_dump($result);
+                //continue;
+                Session::flash('crop_image', $result["data"]["image"]);
+                return redirect()->back();
+            }
+            if ( $result["data"]["state"] == 1 ) {
+                // task success
+                //var_dump($result["data"]["image"]);
+                //break;
+                Session::flash('crop_image', $result["data"]["image"]);
+                return redirect()->back();
+            } else if ( $result["data"]["state"] < 0) {
+                // request failed, log the details
+                //var_dump($result);
+               // break;
+                Session::flash('error', 'something went wrong');
+                return redirect('tolls');
+            } else {
+                // Task processing
+                if ($i == 30) {
+                    //Task processing, abnormal situation, seeking assistance from customer service of picwish
+                }
+            }
+        }
+    }
+
+    public function OCRImageGenerator(Request $request){
+        $image_file_path = $request->file('image_file')->store('/public/uploads');
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/document/ocr');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "X-API-KEY: wxy1eatufgkzork6s",
+            "Content-Type: multipart/form-data",
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, array('sync' => 0,'format' => "txt", 'image_file' => new  \CURLFile(storage_path('app/' . $image_file_path))));
+        $response = curl_exec($curl);
+        $result = curl_errno($curl) ? curl_error($curl) : $response;
+        curl_close($curl);
+        $result = json_decode($result, true);
+        if ( !isset($result["status"]) || $result["status"] != 200 ) {
+            // request failed, log the details
+            var_dump($result);
+            die("post request failed");
+        }
+        //  var_dump($result);
+        $task_id = $result["data"]["task_id"];
+
+
+        //get the task result
+        // 1、"The polling interval is set to 1 second."
+        //2 "The polling time is around 120 seconds."
+        for ($i = 1; $i <= 120; $i++) {
+            if ($i != 1) {
+                sleep(1);
+            }
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, "https://techhk.aoscdn.com/api/tasks/document/ocr/".$task_id);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "X-API-KEY: wxy1eatufgkzork6s",
+
+            ));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+            $result = curl_errno($curl) ? curl_error($curl) : $response;
+            curl_close($curl);
+            var_dump($result);
+            $result = json_decode($result, true);
+            if ( !isset($result["status"]) || $result["status"] != 200 ) {
+                // Task exception, logging the error.
+                //You can choose to continue the loop with 'continue' or break the loop with 'break'
+                //var_dump($result);
+                //continue;
+                Session::flash('ocr_image', $result["data"]["file"]);
+                return redirect('tolls');
+            }
+            if ( $result["data"]["state"] == 1 ) {
+                // task success
+                //var_dump($result["data"]["file"]);
+                //break;
+                Session::flash('ocr_image', $result["data"]["file"]);
+                return redirect('tolls');
+            } else if ( $result["data"]["state"] < 0) {
+                // request failed, log the details
+                //var_dump($result);
+                //break;
+                Session::flash('ocr_image', $result["data"]["file"]);
+                return redirect('tolls');
+            } else {
+                // Task processing
+                if ($i == 120) {
                     //Task processing, abnormal situation, seeking assistance from customer service of picwish
                 }
             }

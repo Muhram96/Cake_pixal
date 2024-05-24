@@ -1,178 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <!-- Basic -->
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Site Metas -->
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-
-    <title>Background Remove</title>
-
-    <!-- slider stylesheet -->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
-
-    <!-- bootstrap core css -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources\css\bootstrap.css') }}" />
-
-    <!-- fonts style -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700|Roboto:400,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.css" />
-    <link rel="stylesheet" href="{{ asset('resources\css\style.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="{{ asset('resources\css\style.css') }}" rel="stylesheet" />
-    <!-- responsive style -->
-    <link href="{{ asset('resources\css\responsive.css') }}" rel="stylesheet" />
-</head>
-
-
-<body>
-
-
-<!-- <div class="hero_area"> -->
-<!-- header section strats -->
-<header class="header_section">
-    <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-            <a class="navbar-brand" href="index.html">
-                <img src="images/logo.png" alt="" />
-
-                <span>
-            Cake Pixel
-            </span>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto mr-2">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url('/tolls') }}">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="service.html">Tools</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact us</a>
-                    </li>
-                </ul>
-                <div class="user_option">
-                    <div class="login_btn-container">
-                        @if (Route::has('login'))
-                            <nav class="-mx-3 flex flex-1 justify-end">
-                                @auth
-                        <a
-                            href="{{ url('/dashboard') }}"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                        >
-                            Dashboard
-                        </a>
-                        @else
-                            <a
-                                href="{{ route('login') }}"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                            >
-                                Login
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a
-                                    href="{{ route('register') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                                >
-                                    Register
-                                </a>
-                                @endif
-                                @endauth
-                            </nav>
-                            @endif
-                    </div>
-                    <form class="form-inline my-2 my-lg-0">
-                        <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                    </form>
-                </div>
-            </div>
-            <div class="call_btn">
-                <a href="">
-                    Call: +01234567890
-                </a>
-            </div>
-        </nav>
-    </div>
-</header>
-<!-- end header section -->
-<!-- </div> -->
-
-<!-- custom menu -->
-<div class="custom_menu-container">
-    <div class="container">
-        <div class="custom_menu">
-            <ul class="navbar-nav ">
-                <li class="nav-item active">
-                    <a class="nav-link pl-0" href="{{ url('/') }}">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/tools') }}">Tools</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="about.html">About </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="contact.html">Contact us</a>
-                </li>
-            </ul>
-            <div class="user_option">
-                <div class="login_btn-container">
-                    @if (Route::has('login'))
-                        <nav class="-mx-3 flex flex-1 justify-end">
-                            @auth
-                                <a
-                                    href="{{ url('/dashboard') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                                >
-                                    Dashboard
-                                </a>
-                            @else
-                                <a
-                                    href="{{ route('login') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                                >
-                                    Login
-                                </a>
-
-                                @if (Route::has('register'))
-                                    <a
-                                        href="{{ route('register') }}"
-                                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                                    >
-                                        Register
-                                    </a>
-                                @endif
-                            @endauth
-                        </nav>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- custom menu -->
-
+@extends('layouts.guest2')
 <!-- about section -->
-
+@section('content')
 <section class="about_section layout_padding">
     <div class="container">
         <div class="row">
@@ -234,7 +62,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-green">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\photo color.png')}}" alt="" />
+                        <a href="{{ route('/Eview') }}">
+                             <img src="{{asset('resources\images\photo color.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -249,7 +79,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-red">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\bg gen.png')}}" alt="" />
+                        <a href="{{ route('/Gview') }}">
+                            <img src="{{asset('resources\images\bg gen.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -264,7 +96,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-green">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\object-remove.png')}}" alt="" />
+                        <a href="{{ route('/unwantedobj') }}">
+                            <img src="{{asset('resources\images\object-remove.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -282,7 +116,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-red">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\image-editing.png')}}" alt="" />
+                        <a href="{{ route('/Cview') }}">
+                             <img src="{{asset('resources\images\image-editing.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -297,7 +133,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-green">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\image compress.png')}}" alt="" />
+                        <a href="{{ route('/Cpview') }}">
+                            <img src="{{asset('resources\images\image compress.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -312,7 +150,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-red">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\indetity.png')}}" alt="" />
+                        <a href="{{ route('/IDview') }}">
+                            <img src="{{asset('resources\images\indetity.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -327,7 +167,9 @@
             <div class="col-md-3 col-sm-6">
                 <div class="content-box bg-green">
                     <div class="img-box">
-                        <img src="{{asset('resources\images\crop.png')}}" alt="" />
+                        <a href="{{ route('/CEview') }}">
+                            <img src="{{asset('resources\images\crop.png')}}" alt="" />
+                        </a>
                     </div>
                     <div class="detail-box">
                         <h6>
@@ -677,151 +519,4 @@
 </section>
 
 <!-- end contact section -->
-
-<!-- info section -->
-<section class="info_section layout_padding-top layout_padding2-bottom">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-lg-3">
-                <div class="info_links pl-lg-5">
-                    <h4>
-                        Menu
-                    </h4>
-                    <ul>
-                        <li class="active">
-                            <a href="index.html">  Home </a>
-                        </li>
-                        <li>
-                            <a class="" href="tools.html">Tools</a>
-                        </li>
-                        <li>
-                            <a href="about.html">  About </a>
-                        </li>
-                        <li>
-                            <a href="contact.html">
-                                Contact Us
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="info_contact">
-                    <h4>
-                        Location
-                    </h4>
-                    <div>
-                        <img src="{{asset('resources\images\location.png')}}" alt="" />
-                        <p>
-                            104 loram ipusm
-                        </p>
-                    </div>
-                    <div>
-                        <img src="{{asset('resources\images\telephone.png')}}" alt="" />
-                        <p>
-                            ( +01 1234567890 )
-                        </p>
-                    </div>
-                    <div>
-                        <img src="{{asset('resources\images\envelope.png')}}" alt="" />
-                        <p>
-                            demo@gmail.com
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3">
-                <div class="info_social">
-                    <h4>
-                        Social Link
-                    </h4>
-                    <div class="social_container">
-                        <div>
-                            <a href="">
-                                <img src="{{asset('resources\images\facebook-logo.png')}}" alt="" />
-                            </a>
-                        </div>
-                        <div>
-                            <a href="">
-                                <img src="{{asset('resources\images\twitter-logo.png')}}'" alt="" />
-                            </a>
-                        </div>
-                        <div>
-                            <a href="">
-                                <img src="{{asset('resources\images\instagram.png')}}" alt="" />
-                            </a>
-                        </div>
-                        <div>
-                            <a href="">
-                                <img src="{{asset('resources\images\linkedin-sign.png')}}'" alt="" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="info_form">
-                    <h4>
-                        Newsletter
-                    </h4>
-                    <form action="#">
-                        <input type="text" placeholder="Enter Your Email" />
-                        <button type="submit">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- end info_section -->
-
-<!-- footer section -->
-<footer class="container-fluid footer_section">
-    <p>
-        &copy; 2024 All Rights Reserved By loram Ipsum
-    </p>
-</footer>
-<!-- footer section -->
-
-<script src="{{asset('resources\javascript\jquery-3.4.1.min.js') }}"></script>
-<script src="{{asset('resources\javascript\bootstrap.js') }}"></script>
-<script src="{{asset('resources\javascript\circles.min.js') }}"></script>
-<script src="{{asset('resources\javascript\custom.js') }}"></script>
-<script src="{{asset('resources\javascript\slider.js') }}"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-<script>
-    $('.ba-carosel').slick({
-        infinite: true,
-        arrows: true,
-        slidesToShow: 4,
-        slidesToScroll: 2,
-        prevArrow: '<button type="button" class="custom-prev"><img src="{{asset('resources/images/left.png')}}" alt=""></button>',
-        nextArrow: '<button type="button" class="custom-next"><img src="{{asset('resources/images/right.png')}}" alt=""></button>',
-        responsive: [{
-            breakpoint: 768,
-            settings: {
-                arrows: false,
-                centerMode: true,
-                centerPadding: '40px',
-                slidesToShow: 3
-            }
-        }, {
-            breakpoint: 480,
-            settings: {
-                arrows: false,
-                centerMode: true,
-                centerPadding: '40px',
-                slidesToShow: 1
-            }
-        }]
-    });
-</script>
-
-</body>
-
-</html>
+@endsection
