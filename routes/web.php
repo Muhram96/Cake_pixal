@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome2');
 });
 
 Route::middleware([
@@ -14,13 +14,26 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/tolls', function () {
-        return view('tolls');
-    })->name('/tolls');
-    Route::POST('/changebackground', [\App\Http\Controllers\TollsController::class, 'RemoveBackground'])->name('/changebackground');
+    Route::get('/tools', function () {
+        return view('tools');
+    })->name('/tools');
+    Route::get('/about', [\App\Http\Controllers\HomeController::class, 'AboutUs'])->name('/about');
+    Route::get('/contact', [\App\Http\Controllers\HomeController::class, 'ContactUs'])->name('/contact');
+    Route::get('/view', [\App\Http\Controllers\HomeController::class, 'View'])->name('/view');
+    Route::get('/Eview', [\App\Http\Controllers\HomeController::class, 'EView'])->name('/Eview');
+    Route::get('/Gview', [\App\Http\Controllers\HomeController::class, 'GView'])->name('/Gview');
+    Route::get('/Cview', [\App\Http\Controllers\HomeController::class, 'CView'])->name('/Cview');
+    Route::get('/Cpview', [\App\Http\Controllers\HomeController::class, 'CPView'])->name('/Cpview');
+    Route::get('/IDview', [\App\Http\Controllers\HomeController::class, 'IDView'])->name('/IDview');
+    Route::get('/CEview', [\App\Http\Controllers\HomeController::class, 'CEView'])->name('/CEview');
+    Route::POST('/removebackground', [\App\Http\Controllers\TollsController::class, 'RemoveBackground'])->name('/removebackground');
     Route::POST('/enhanceimage', [\App\Http\Controllers\TollsController::class, 'enhanceimage'])->name('/enhanceimage');
-    Route::get('/unwanted', [\App\Http\Controllers\TollsController::class, 'unwanted'])->name('/unwanted');
+    Route::get('/unwantedobj', [\App\Http\Controllers\HomeController::class, 'UnwantedObj'])->name('/unwantedobj');
     Route::POST('/remove/obj', [\App\Http\Controllers\TollsController::class, 'ObjectRemover'])->name('/remove/obj');
     Route::POST('/backgroundchange', [\App\Http\Controllers\TollsController::class, 'GenerateBackGroundImage'])->name('/backgroundchange');
     Route::POST('/idphoto', [\App\Http\Controllers\TollsController::class, 'idphotoGenerator'])->name('/idphoto');
+    Route::POST('/colorimage', [\App\Http\Controllers\TollsController::class, 'ColorImageGenerator'])->name('/colorimage');
+    Route::POST('/compressedimage', [\App\Http\Controllers\TollsController::class, 'CompressedImageGenerator'])->name('/compressedimage');
+    Route::POST('/crop_enhanceimage', [\App\Http\Controllers\TollsController::class, 'CropEnhancedImageGenerator'])->name('/crop_enhanceimage');
+    Route::POST('/ocrimage', [\App\Http\Controllers\TollsController::class, 'OCRImageGenerator'])->name('/ocrimage');
 });
