@@ -10,7 +10,13 @@ class PaymentController extends Controller
 {
     public function showPaymentForm()
     {
-        return view('payment');
+        $plans = [
+            ['name' => 'Basic Plan', 'price' => 999],  // price in cents
+            ['name' => 'Standard Plan', 'price' => 1999],
+            ['name' => 'Premium Plan', 'price' => 2999],
+        ];
+
+        return view('payment', ['plans' => $plans]);
     }
 
     public function processPayment(Request $request)
@@ -18,13 +24,11 @@ class PaymentController extends Controller
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         try {
-            // Create a charge or subscription using the Stripe API
-            // Replace the following with actual payment processing logic
             $charge = \Stripe\Charge::create([
-                'amount' => 1000, // amount in cents
+                'amount' => $request->amount, // amount in cents
                 'currency' => 'usd',
                 'source' => $request->stripeToken,
-                'description' => 'Example Charge',
+                'description' => $request->plan,
             ]);
 
             // Payment was successful
@@ -34,9 +38,9 @@ class PaymentController extends Controller
             return redirect()->route('payment.form')->with('error', $e->getMessage());
         }
     }
-    public function paymentSuccess()
-{
-    return view('success'); // Adjust the view name as per your application
-}
-}
 
+    public function paymentSuccess()
+    {
+        return view('success');
+    }
+}
