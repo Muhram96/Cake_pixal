@@ -22,8 +22,8 @@
                         , content here', making it
                     </p>
                     <div>
-                        <a href="">
-                            About More
+                        <a href="{{ route('register') }}">
+                            Buy a Package
                         </a>
                     </div>
                 </div>
