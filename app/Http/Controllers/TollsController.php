@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GuestCreditHistory;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -9,6 +10,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CreditHistory;
+use App\Models\Tool;
+use App\Models\Guest;
+use App\Models\UserCreditHistory;
+use Carbon\Carbon;
 class TollsController extends Controller
 {
     public function RemoveBackground(Request $request)
@@ -19,7 +26,15 @@ class TollsController extends Controller
                 ],[
                 'image_file.max' => 'The image size should not exceed 15MB.', // Custom error message for max size validation
         ]);
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
 
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         // Store the uploaded file in the specified location
         $image_file_path = $request->file('image_file')->store('public/uploads');
 
@@ -652,4 +667,91 @@ class TollsController extends Controller
             }
         }
     }
+
+    public function checkLimit(Request $request, int $tool_id)
+    {
+
+        $user_id = Auth::id();
+        $tool = Tool::find($tool_id);
+
+
+        if (!$tool) {
+            return response()->json(['error' => 'Tool not found'], 404);
+        }
+
+
+        $tool_token = $tool->token_req;
+         $totalCreditsConsumed = $this->getCreditConsumedSum($user_id);
+         $totalRemainingCredits = $this->getRemainCreditdSum($user_id);
+
+         $creditBalance = $totalRemainingCredits - $totalCreditsConsumed;
+         $requestprocess =$creditBalance - $tool_token;
+
+        if ($requestprocess >= 0) {
+
+            $usedCreditHistory = CreditHistory::create([
+                'user_id' => $user_id,
+                'tool_id' => $tool_id,
+                'token_consumed' => $tool_token,
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function checkIpForGuest(Request $request, int $tool_id)
+    {
+
+        $sessionIp = $request->ip();
+        $tool = Tool::find($tool_id);
+        $tool_token = $tool->token_req;
+        $totalCreditsConsumed = $this->getCreditConsumedSum($sessionIp);
+        $totalRemainingCredits = $this->getRemainCreditdSum($sessionIp);
+        $creditBalance = $totalRemainingCredits - $totalCreditsConsumed;
+        $requestprocess =$creditBalance - $tool_token;
+
+        if ($requestprocess >= 0) {
+            $guest = GuestCreditHistory::create([
+                'tool_id' => $tool_token,
+                'ip_address' => $sessionIp,
+                'credit_consumed' =>  $tool_token,
+            ]);
+
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public function getCreditConsumedSum($user_id)
+    {
+        if(!Auth::check()){
+            $creditHistoryExists = GuestCreditHistory::where('ip_address', $user_id)->exists();
+            if (!$creditHistoryExists) {
+                return 0;
+            }
+            return GuestCreditHistory::where('ip_address', $user_id)->sum('credit_consumed');
+        }
+        $creditHistoryExists = CreditHistory::where('user_id', $user_id)->exists();
+        if (!$creditHistoryExists) {
+            return 0;
+        }
+        return CreditHistory::where('user_id', $user_id)->sum('token_consumed');
+    }
+
+    public function getRemainCreditdSum($user_id)
+    {
+        if(!Auth::check()){
+            return Guest::where('ip_address', $user_id)
+                ->sum('credit_balance');
+        }
+        $now = Carbon::now();
+        return UserCreditHistory::where('user_id', $user_id)
+            ->where('expiry_date', '>', $now)
+            ->sum('credit_buy');
+
+    }
+
 }

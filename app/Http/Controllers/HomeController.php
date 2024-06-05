@@ -1,11 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\CreditHistory;
+use App\Models\User;
+use App\Models\UserCreditHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class HomeController extends Controller
 {
+    public function Dashboard(){
+        $now = Carbon::now();
+        $user_id = Auth::id();
+        $data = UserCreditHistory::where('user_id', $user_id)->paginate(4);;
+         $token_buy =UserCreditHistory::where('user_id', $user_id)
+            ->sum('credit_buy');
+         $token_used= CreditHistory::where('user_id', $user_id)
+            ->sum('token_consumed');
+         $token =  $token_buy- $token_used;
+        $data = UserCreditHistory::paginate(4);
+        return  view('dashboard', ['data' => $data, 'token'=>$token]);
+    }
+
     public function AboutUs(){
         return view('about');
     }

@@ -404,7 +404,7 @@ a:focus {
 
 .do_section .content-box img {
     height: 70px;
-    margin: 15px;
+    margin: 15px auto;
 }
 
 .do_section .content-box.bg-red {
@@ -788,5 +788,82 @@ a:focus {
     color: #ffffff;
 }
 
+/*Dashboard CSS Start*/
+.card {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+}
+.card svg {
+    fill: none;
+    stroke: gray;
+    stroke-width: 1.5;
+    width: 24px;
+    height: 24px;
+}
+.card h2 {
+    margin-left: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333333;
+}
+.card p {
+    margin-top: 10px;
+    font-size: 0.875rem;
+    color: #666666;
+}
+.card a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+}
+.card a:hover {
+    text-decoration: underline;
+}
+table.dashbord-data {
+    width: 100%;
+    border-collapse: collapse;
+}
+.dashbord-data th,  .dashbord-data td {
+    padding: 8px;
+    border: 1px solid #dddddd;
+    text-align: left;
+
+}
+.dashbord-data th {
+    background-color: #6875f5;;
+}
+.dashbord-data thead tr th {
+    color: #fff;
+}
+@media only screen and (max-width: 600px) {
+    table.dashbord-data, thead, tbody, th, td, tr {
+        display: block;
+    }
+    .dashbord-data th {
+        display: none;
+    }
+    .dashbord-data tr {
+        border: 1px solid #dddddd;
+        margin-bottom: 10px;
+    }
+    .dashbord-data td {
+        border: none;
+        border-bottom: 1px solid #dddddd;
+        position: relative;
+        padding-left: 50%;
+    }
+    .dashbord-data td:before {
+        position: absolute;
+        left: 6px;
+        content: attr(data-label);
+        font-weight: bold;
+    }
+}
+
+
+/*Dashboard CSS End*/
 
 /*# sourceMappingURL=style.css.map */

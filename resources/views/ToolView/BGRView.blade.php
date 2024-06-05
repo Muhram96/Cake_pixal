@@ -278,6 +278,7 @@
                         <div class="text" id="uploadText">
                             <span>Click to upload image</span>
                         </div>
+                        <input type="hidden" id="tool_id" name="tool_id" value="1">
                         <input type="file" id="imgInp" name="image_file" style="display: none;">
                     </label>
                     <div class="validationtext">
