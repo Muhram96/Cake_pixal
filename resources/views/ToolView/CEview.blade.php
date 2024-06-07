@@ -264,7 +264,7 @@
     <div class="main">
         @if(!session('crop_image'))
             <div class="background-inner-wrap">
-                <h1>Image Background Remover</h1>
+                <h1>Photo Crop and Enhance</h1>
                 <p class="p">Upload your image here.</p>
                 <form id="uploadForm" action="{{ route('/crop_enhanceimage') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -278,6 +278,7 @@
                             <div class="text" id="uploadText">
                                 <span>Click to upload image</span>
                             </div>
+                            <input type="hidden" id="tool_id" name="tool_id" value="10">
                             <input type="file" id="imgInp" name="image_file" style="display: none;">
                         </label>
                         <div class="validationtext">

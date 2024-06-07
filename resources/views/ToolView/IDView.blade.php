@@ -157,7 +157,7 @@
             <a class="navbar-brand" href="index.html">
                 <img src="{{asset('resources\images\logo.png')}}" alt="" />
                 <span>
-                        Background Remove
+                        ID Photo
             </span>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -264,7 +264,7 @@
     <div class="main">
         @if(!session('id_image'))
             <div class="background-inner-wrap">
-                <h1>Image Background Remover</h1>
+                <h1>Identity Photo</h1>
                 <p class="p">Upload your image here.</p>
                 <form id="uploadForm" action="{{ route('/idphoto') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -278,6 +278,7 @@
                             <div class="text" id="uploadText">
                                 <span>Click to upload image</span>
                             </div>
+                            <input type="hidden" id="tool_id" name="tool_id" value="9">
                             <input type="file" id="imgInp" name="image_file" style="display: none;">
                         </label>
                         <div class="validationtext">

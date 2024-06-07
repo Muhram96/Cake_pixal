@@ -265,7 +265,7 @@
     <div class="main">
         @if(!session('object_removed'))
             <div class="background-inner-wrap">
-                <h1>Image Background Remover</h1>
+                <h1>Remove Unwanted Object</h1>
                 <p class="p">Upload your image here.</p>
                 <form id="uploadForm" action="{{ route('/remove/obj') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -278,6 +278,7 @@
                         <div class="text" id="uploadText">
                             <span>Click to upload image</span>
                         </div>
+                        <input type="hidden" id="tool_id" name="tool_id" value="6">
                         <input type="file" id="imgInp" name="image_file" style="display: none;">
                     </label>
                     <img src="#" alt="Image" id="image" style="display: none">
