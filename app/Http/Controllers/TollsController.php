@@ -114,6 +114,15 @@ class TollsController extends Controller
     }
 
     public function enhanceimage(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('public/uploads');
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/scale');
@@ -189,6 +198,15 @@ class TollsController extends Controller
     }
     public function ObjectRemover(Request $request)
     {
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('public/uploads');
         $rectangles=$request->rectangles;
         $curl = curl_init();
@@ -217,7 +235,15 @@ class TollsController extends Controller
     }
     public function GenerateBackGroundImage(Request $request)
     {
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
 
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
 
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $prompt =$request->prompt;
@@ -296,6 +322,15 @@ class TollsController extends Controller
     }
 
     public function idphotoGenerator(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $bg_color =$request->bg_color;
         $size =$request->size;
@@ -372,6 +407,15 @@ class TollsController extends Controller
     }
 
     public function ColorImageGenerator(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
 
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $curl = curl_init();
@@ -447,6 +491,15 @@ class TollsController extends Controller
     }
 
     public function CompressedImageGenerator(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/imgcompress');
@@ -521,6 +574,15 @@ class TollsController extends Controller
     }
 
     public function CropEnhancedImageGenerator(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/visual/correction');
@@ -595,6 +657,15 @@ class TollsController extends Controller
     }
 
     public function OCRImageGenerator(Request $request){
+        if(!auth()->check()){
+            $status= $this->checkIpForGuest($request, $request->tool_id);
+            if($status==''){
+                return response()->json(['error' => 'Not enough tokens. Please Register!'], Response::HTTP_FORBIDDEN);
+            }
+
+        }elseif(!$this->checkLimit($request, $request->tool_id)) {
+            return response()->json(['error' => 'Not enough tokens'], Response::HTTP_FORBIDDEN);
+        }
         $image_file_path = $request->file('image_file')->store('/public/uploads');
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://techhk.aoscdn.com/api/tasks/document/ocr');
